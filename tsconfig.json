@@ -1,0 +1,24 @@
+{
+  "include": [
+    "./src/*", "src/TextDisplay/TextDisplay.tsx", "src/TextDisplay/TextArea.tsx", "src/data/letters-data.ts", "src/LettersWiki/LettersWiki.tsx"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "jsx": "preserve",
+    "target": "es5",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  }
+}
