@@ -9,13 +9,15 @@ import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
 import { OffsetGenerator } from './util/offsetGenerator';
+import { createTextData } from './util/TextData/createTextData';
 let letterLocked = false;
 
 function App() {
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
   const [letter, setLLetter] = useState("ة");
-  const lines = illiInthur.split("\n");
+  const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
+  const lines = _illiInthur.split("\n");
 
   window.addEventListener('click', () => {
     letterLocked = false;
@@ -34,6 +36,8 @@ function App() {
   };
 
   const offsetGenerator = new OffsetGenerator;
+  const textData = createTextData(_illiInthur);
+  console.log(textData);
 
   return (
     <div className="App">
@@ -44,7 +48,7 @@ function App() {
               key={key.toString()}
               text={line}
               onWordChange={onWordChange}
-              offset={offsetGenerator.getNewOffset(line)}
+              offset={offsetGenerator.getNewOffset(`${line}\n`)}
               onLetterChange={
                 (newLetter: string) => {
                   if (!letterLocked) {
@@ -57,7 +61,7 @@ function App() {
                 letterLocked = true;
               }}
             />
-            : <br />
+            : offsetGenerator.getNewOffset(`\n`) && <br />
           )
         }
 

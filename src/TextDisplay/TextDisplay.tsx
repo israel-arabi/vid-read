@@ -17,7 +17,7 @@ export function TextDisplay(props: {
         >
             {words.map((word, i) => (
                 <Word
-                    offset={offsetGenerator.getNewOffset(word) + props.offset}
+                    offset={offsetGenerator.getNewOffset(`${word} `) + props.offset}
                     style={{}}
                     key={i} word={`${word}`}
                     onWordChange={props.onWordChange}
