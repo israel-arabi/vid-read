@@ -1,6 +1,6 @@
 {
   "include": [
-    "./src/*", "src/TextDisplay/TextDisplay.tsx", "src/TextDisplay/TextArea.tsx", "src/data/letters-data.ts", "src/LettersWiki/LettersWiki.tsx"
+    "./src/*", "src/TextDisplay/TextDisplay.tsx", "src/TextDisplay/TextArea.tsx", "src/data/letters-data.ts", "src/LettersWiki/LettersWiki.tsx", "src/util/TextData"
   ],
   "compilerOptions": {
     "lib": [
