@@ -28,7 +28,6 @@ function makeLetter(letter: string, i: number, letters: string[], onLetterChange
             letter={letter}
             first={first}
             last={last}
-            offset={offset}
             onLetterChange={(a: any) => {
                 onLetterChange(a);
             }}

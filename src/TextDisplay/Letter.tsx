@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { zwj } from "../zwj";
-export function Letter(props: any) {
+export function Letter(props: { letter: string; first: boolean; last: boolean; onLetterChange: Function; }) {
     const [letterMore, setLetterMore] = useState();
     const { letter } = props;
     let displayLetter = letter;
