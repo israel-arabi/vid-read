@@ -8,6 +8,7 @@ import { WordsWiki } from "./WordsWiki/WordsWiki";
 import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
+import { OffsetGenerator } from './util/offsetGenerator';
 let letterLocked = false;
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
     }
   };
 
+  const offsetGenerator = new OffsetGenerator;
+
   return (
     <div className="App">
       <div className="text-area">
@@ -41,6 +44,7 @@ function App() {
               key={key.toString()}
               text={line}
               onWordChange={onWordChange}
+              offset={offsetGenerator.getNewOffset(line)}
               onLetterChange={
                 (newLetter: string) => {
                   if (!letterLocked) {

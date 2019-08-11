@@ -2,6 +2,7 @@ import React, { useState, CSSProperties } from "react";
 import { lettersData } from "../data/letters-data";
 import { Letter } from "./Letter";
 import * as _ from "lodash";
+import { OffsetGenerator } from '../util/offsetGenerator';
 
 export function combineLamAndAlifToLa(letters: string[]): string[] {
     return letters.reduce<string[]>((accumulator, currentValue) => {
@@ -16,7 +17,7 @@ export function combineLamAndAlifToLa(letters: string[]): string[] {
     }, []);
 }
 
-function makeLetter(letter: string, i: number, letters: string[], onLetterChange: Function) {
+function makeLetter(letter: string, i: number, letters: string[], onLetterChange: Function, offset: number) {
     const previousLetter = _.find(lettersData, letterStep => letterStep.isolated === letters[i - 1]);
     const nextLetter = _.find(lettersData, letterStep => letterStep.isolated === letters[i + 1]);
     let first = i === 0 || !_.get(previousLetter, "initial");
@@ -27,6 +28,7 @@ function makeLetter(letter: string, i: number, letters: string[], onLetterChange
             letter={letter}
             first={first}
             last={last}
+            offset={offset}
             onLetterChange={(a: any) => {
                 onLetterChange(a);
             }}
@@ -34,12 +36,13 @@ function makeLetter(letter: string, i: number, letters: string[], onLetterChange
     );
 }
 
-type acceptedArgs = { word: string; style: CSSProperties; onWordChange: Function; onLetterChange: Function; };
-export function Word({ word, style, onWordChange, onLetterChange, }: acceptedArgs) {
+type acceptedArgs = { word: string; style: CSSProperties; onWordChange: Function; onLetterChange: Function; offset: number; };
+export function Word({ word, style, onWordChange, onLetterChange, offset }: acceptedArgs) {
     let letters = word.replace(/[\u200B-\u200D\uFEFF]/g, '').split("");
     const [wordMore, setWordMore] = useState();
 
     letters = combineLamAndAlifToLa(letters);
+    const offsetGenerator = new OffsetGenerator;
 
     return (
         <span style={style}>
@@ -55,7 +58,7 @@ export function Word({ word, style, onWordChange, onLetterChange, }: acceptedArg
                 }}
             >
 
-                {letters.map((letter, i) => makeLetter(letter, i, letters, onLetterChange))}
+                {letters.map((letter, i) => makeLetter(letter, i, letters, onLetterChange, offset + offsetGenerator.getNewOffset(letter)))}
                 {wordMore}
             </span>
             {" "}
