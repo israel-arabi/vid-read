@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import YouTube from 'react-youtube';
 // import song from './song.mp4';
 
-export function Video(props: { onReady?: Function, onTimeUpdate?: Function }) {
-    const videoRef = React.createRef<HTMLVideoElement>();
+export function Video(props: { onReady?: Function, onTimeUpdate?: Function, currentTime?: number }) {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    let onLoadCallback = () => { };
     const onLoad = () => {
-        console.log(videoRef);
-        const target = videoRef.current as HTMLVideoElement;
-        // target.currentTime = 60;
-        target.addEventListener("timeupdate", (e) => {
+        if (!videoRef.current) {
+            return;
+        }
+
+        if (props.currentTime && props.currentTime) {
+            videoRef.current.currentTime = props.currentTime;
+        }
+
+        onLoadCallback();
+        videoRef.current.addEventListener("timeupdate", (e) => {
             if (!e.target) {
                 return;
             }
@@ -17,13 +24,12 @@ export function Video(props: { onReady?: Function, onTimeUpdate?: Function }) {
             if (props.onTimeUpdate) {
                 props.onTimeUpdate(target.currentTime);
             }
-
-            // if (target.currentTime > 61) {
-            //     target.pause();
-            // }
         });
     };
-    // setTimeout(, 500)
+
+    if (videoRef.current && props.currentTime && props.currentTime) {
+        videoRef.current.currentTime = props.currentTime;
+    }
 
     return (
         <video

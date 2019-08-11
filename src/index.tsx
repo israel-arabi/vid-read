@@ -16,6 +16,7 @@ function App() {
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
   const [letter, setLLetter] = useState("ة");
+  const [currentTime, setCurrentTime] = useState(0);
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -24,9 +25,10 @@ function App() {
     setLLetter('');
   };
 
+
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === '[') {
-
+      setCurrentTime(60);
     }
 
     if (e.key === ']') {
@@ -102,6 +104,7 @@ function App() {
         <WordsWiki ar={wordAr} translation={wordTranslation} />
         <Video
           onTimeUpdate={onTimeUpdate}
+          currentTime={currentTime}
         />
       </div>
     </div>
