@@ -37,7 +37,6 @@ function App() {
 
   const offsetGenerator = new OffsetGenerator;
   const textData = createTextData(_illiInthur);
-  console.log(textData);
 
   return (
     <div className="App">
@@ -45,7 +44,7 @@ function App() {
         {
           lines.map((line, key) => line
             ? <TextDisplay
-              key={key.toString()}
+              key={key}
               text={line}
               onWordChange={onWordChange}
               offset={offsetGenerator.getNewOffset(`${line}\n`)}
@@ -61,7 +60,7 @@ function App() {
                 letterLocked = true;
               }}
             />
-            : offsetGenerator.getNewOffset(`\n`) && <br />
+            : offsetGenerator.getNewOffset(`\n`) && <br key={key} />
           )
         }
 
