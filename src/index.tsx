@@ -1,4 +1,4 @@
-import React, { useState, BaseSyntheticEvent } from "react";
+import React, { useState, BaseSyntheticEvent, useEffect } from "react";
 import { render } from "react-dom";
 import { TextDisplay } from "./TextDisplay/TextDisplay";
 import "./styles.css";
@@ -19,10 +19,30 @@ function App() {
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
-  window.addEventListener('click', () => {
+  const onClick = () => {
     letterLocked = false;
     setLLetter('');
-  });
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === '[') {
+
+    }
+
+    if (e.key === ']') {
+
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('click', onClick);
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.removeEventListener('click', onClick);
+      window.removeEventListener('keydown', onKeyDown);
+    }
+  }, []);
 
   const onWordChange = (newWord: string) => {
     translate(newWord).then((translation: string) => {
@@ -35,8 +55,15 @@ function App() {
     }
   };
 
+  let videoTime = 0;
+
   const offsetGenerator = new OffsetGenerator;
   const textData = createTextData(_illiInthur);
+  const onTimeUpdate = (time: number) => {
+    videoTime = time;
+  };
+
+
 
   return (
     <div className="App">
@@ -73,7 +100,9 @@ function App() {
         }}>
         <LetterWiki letter={letter} />
         <WordsWiki ar={wordAr} translation={wordTranslation} />
-        <Video />
+        <Video
+          onTimeUpdate={onTimeUpdate}
+        />
       </div>
     </div>
   );

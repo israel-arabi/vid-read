@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import YouTube from 'react-youtube';
 // import song from './song.mp4';
 
-export function Video(props: { onReady?: Function }) {
+export function Video(props: { onReady?: Function, onTimeUpdate?: Function }) {
     const videoRef = React.createRef<HTMLVideoElement>();
     const onLoad = () => {
         console.log(videoRef);
         const target = videoRef.current as HTMLVideoElement;
         // target.currentTime = 60;
         target.addEventListener("timeupdate", (e) => {
-            console.log(e);
             if (!e.target) {
                 return;
             }
             const target = e.target as HTMLVideoElement;
+
+            if (props.onTimeUpdate) {
+                props.onTimeUpdate(target.currentTime);
+            }
 
             // if (target.currentTime > 61) {
             //     target.pause();
