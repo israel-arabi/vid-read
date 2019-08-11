@@ -8,6 +8,7 @@ export function TextDisplay(props: {
     onLetterChange: Function;
     onWordsClick: Function;
     offset: number;
+    onLetterClick: Function;
 }) {
     const offsetGenerator = new OffsetGenerator;
     const words = props.text.split(" ");
@@ -22,6 +23,7 @@ export function TextDisplay(props: {
                     key={i} word={`${word}`}
                     onWordChange={props.onWordChange}
                     onLetterChange={props.onLetterChange}
+                    onLetterClick={props.onLetterClick}
                 />
             ))}
         </p>

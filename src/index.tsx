@@ -76,6 +76,9 @@ function App() {
               key={key}
               text={line}
               onWordChange={onWordChange}
+              onLetterClick={(offset: number) => {
+                console.log(offset);
+              }}
               offset={offsetGenerator.getNewOffset(`${line}\n`)}
               onLetterChange={
                 (newLetter: string) => {

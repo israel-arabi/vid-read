@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { zwj } from "../zwj";
-export function Letter(props: { letter: string; first: boolean; last: boolean; onLetterChange: Function; }) {
+export function Letter(props: { letter: string; first: boolean; last: boolean; onLetterChange: Function; onLetterClick: Function; offset: number; }) {
     const [letterMore, setLetterMore] = useState();
     const { letter } = props;
     let displayLetter = letter;
@@ -12,6 +12,9 @@ export function Letter(props: { letter: string; first: boolean; last: boolean; o
     }
     return (
         <span
+            onClick={() => {
+                props.onLetterClick(props.offset);
+            }}
             onMouseEnter={e => {
                 props.onLetterChange(letter);
                 setLetterMore(<span className="letter-more" />);
@@ -25,6 +28,6 @@ export function Letter(props: { letter: string; first: boolean; last: boolean; o
             {displayLetter}
 
             {letterMore}
-        </span>
+        </span >
     );
 }

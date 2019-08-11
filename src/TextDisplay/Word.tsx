@@ -17,7 +17,7 @@ export function combineLamAndAlifToLa(letters: string[]): string[] {
     }, []);
 }
 
-function makeLetter(letter: string, i: number, letters: string[], onLetterChange: Function, offset: number) {
+function makeLetter(letter: string, i: number, letters: string[], onLetterChange: Function, onLetterClick: Function, offset: number) {
     const previousLetter = _.find(lettersData, letterStep => letterStep.isolated === letters[i - 1]);
     const nextLetter = _.find(lettersData, letterStep => letterStep.isolated === letters[i + 1]);
     let first = i === 0 || !_.get(previousLetter, "initial");
@@ -28,6 +28,8 @@ function makeLetter(letter: string, i: number, letters: string[], onLetterChange
             letter={letter}
             first={first}
             last={last}
+            onLetterClick={onLetterClick}
+            offset={offset}
             onLetterChange={(a: any) => {
                 onLetterChange(a);
             }}
@@ -35,8 +37,8 @@ function makeLetter(letter: string, i: number, letters: string[], onLetterChange
     );
 }
 
-type acceptedArgs = { word: string; style: CSSProperties; onWordChange: Function; onLetterChange: Function; offset: number; };
-export function Word({ word, style, onWordChange, onLetterChange, offset }: acceptedArgs) {
+type acceptedArgs = { word: string; style: CSSProperties; onWordChange: Function; onLetterChange: Function; onLetterClick: Function; offset: number; };
+export function Word({ word, style, onWordChange, onLetterChange, onLetterClick, offset }: acceptedArgs) {
     let letters = word.replace(/[\u200B-\u200D\uFEFF]/g, '').split("");
     const [wordMore, setWordMore] = useState();
 
@@ -57,7 +59,7 @@ export function Word({ word, style, onWordChange, onLetterChange, offset }: acce
                 }}
             >
 
-                {letters.map((letter, i) => makeLetter(letter, i, letters, onLetterChange, offset + offsetGenerator.getNewOffset(letter)))}
+                {letters.map((letter, i) => makeLetter(letter, i, letters, onLetterChange, onLetterClick, offset + offsetGenerator.getNewOffset(letter)))}
                 {wordMore}
             </span>
             {" "}
