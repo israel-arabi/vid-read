@@ -30,7 +30,7 @@ function App() {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === '[') {
-      // setCurrentTime(60);
+      
     }
 
     if (e.key === ']') {
@@ -46,7 +46,7 @@ function App() {
       window.removeEventListener('click', onClick);
       window.removeEventListener('keydown', onKeyDown);
     }
-  }, []);
+  }, [videoTime]);
 
   const onWordChange = (newWord: string) => {
     translate(newWord).then((translation: string) => {
