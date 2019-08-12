@@ -10,13 +10,15 @@ import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
 import { OffsetGenerator } from './util/offsetGenerator';
 import { createTextData } from './util/TextData/createTextData';
+import { TextData } from './util/TextData/TextData.interface';
 let letterLocked = false;
 
 function App() {
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
   const [letter, setLLetter] = useState("ة");
-  const [currentTime, setCurrentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(10);
+  const [videoTime, setVideoTime] = useState(0);
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -28,7 +30,7 @@ function App() {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === '[') {
-      setCurrentTime(60);
+      // setCurrentTime(60);
     }
 
     if (e.key === ']') {
@@ -57,12 +59,16 @@ function App() {
     }
   };
 
-  let videoTime = 0;
-
   const offsetGenerator = new OffsetGenerator;
-  const textData = createTextData(_illiInthur);
-  const onTimeUpdate = (time: number) => {
-    videoTime = time;
+  let textData: TextData;
+  if (window.localStorage.textData) {
+    textData = JSON.parse(window.localStorage.textData);
+  } else {
+    textData = createTextData(_illiInthur)
+  }
+
+  const onCurrentTimeUpdate = (time: number) => {
+    setVideoTime(time);
   };
 
 
@@ -77,7 +83,10 @@ function App() {
               text={line}
               onWordChange={onWordChange}
               onLetterClick={(offset: number) => {
-                console.log(offset);
+                textData[offset].videoSecond = videoTime;
+                console.log({ videoTime });
+                window.localStorage.textData = JSON.stringify(textData);
+                console.log(textData);
               }}
               offset={offsetGenerator.getNewOffset(`${line}\n`)}
               onLetterChange={
@@ -106,7 +115,7 @@ function App() {
         <LetterWiki letter={letter} />
         <WordsWiki ar={wordAr} translation={wordTranslation} />
         <Video
-          onTimeUpdate={onTimeUpdate}
+          onCurrentTimeUpdate={onCurrentTimeUpdate}
           currentTime={currentTime}
         />
       </div>
