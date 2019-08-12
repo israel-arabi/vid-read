@@ -1,6 +1,6 @@
 {
   "include": [
-    "./src/*", "src/TextDisplay/TextDisplay.tsx", "src/TextDisplay/TextArea.tsx", "src/data/letters-data.ts", "src/LettersWiki/LettersWiki.tsx", "src/util/TextData"
+    "./src/*", "src/TextDisplay/TextDisplay.tsx", "src/TextDisplay/TextArea.tsx", "src/data/letters-data.ts", "src/LettersWiki/LettersWiki.tsx", "src/util/TextData", "src/util/WordsTimeMap/WordsTimeMap.test.ts", "src/util/WordsTimeMap/WordsTimeMap.ts"
   ],
   "compilerOptions": {
     "lib": [
