@@ -1,3 +1,6 @@
+/**
+ * offset used to know the offset of a given letter from the text start
+ */
 export class OffsetGenerator {
     offset = 0;
 

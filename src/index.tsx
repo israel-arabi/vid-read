@@ -30,7 +30,7 @@ function App() {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === '[') {
-      
+
     }
 
     if (e.key === ']') {
@@ -60,18 +60,23 @@ function App() {
   };
 
   const offsetGenerator = new OffsetGenerator;
-  let textData: TextData;
-  if (window.localStorage.textData) {
-    textData = JSON.parse(window.localStorage.textData);
-  } else {
-    textData = createTextData(_illiInthur)
-  }
+  // let textData: TextData;
+  // if (window.localStorage.textData) {
+  //   textData = JSON.parse(window.localStorage.textData);
+  // } else {
+  //   textData = createTextData(_illiInthur)
+  // }
 
   const onCurrentTimeUpdate = (time: number) => {
     setVideoTime(time);
   };
 
-
+  const onLetterClick = (offset: number) => {
+    // textData[offset].videoSecond = videoTime;
+    // console.log({ videoTime });
+    // window.localStorage.textData = JSON.stringify(textData);
+    // console.log(textData);
+  };
 
   return (
     <div className="App">
@@ -82,12 +87,7 @@ function App() {
               key={key}
               text={line}
               onWordChange={onWordChange}
-              onLetterClick={(offset: number) => {
-                textData[offset].videoSecond = videoTime;
-                console.log({ videoTime });
-                window.localStorage.textData = JSON.stringify(textData);
-                console.log(textData);
-              }}
+              onLetterClick={onLetterClick}
               offset={offsetGenerator.getNewOffset(`${line}\n`)}
               onLetterChange={
                 (newLetter: string) => {
