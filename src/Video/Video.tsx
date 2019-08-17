@@ -1,12 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, SyntheticEvent } from "react";
 import YouTube from 'react-youtube';
 // import song from './song.mp4';
 
-export function Video(props: { onReady?: Function, onCurrentTimeUpdate?: Function, onTimeUpdate?: Function, currentTime?: number }) {
+export function Video(props: { onLoad?: Function, onCurrentTimeUpdate?: Function, onTimeUpdate?: Function, currentTime?: number }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [lastCurrentTime, setLastCurrentTime] = useState();
     let onLoadCallback = () => { };
-    const onLoad = () => {
+    const onLoad = (e: SyntheticEvent) => {
         if (!videoRef.current) {
             return;
         }
@@ -15,21 +15,11 @@ export function Video(props: { onReady?: Function, onCurrentTimeUpdate?: Functio
             videoRef.current.currentTime = props.currentTime;
             setLastCurrentTime(props.currentTime);
         }
+        if (props.onLoad) {
+            props.onLoad(e);
+        }
 
         onLoadCallback();
-        videoRef.current.addEventListener("timeupdate", (e) => {
-            if (!e.target) {
-                return;
-            }
-            const target = e.target as HTMLVideoElement;
-
-            if (props.onCurrentTimeUpdate) {
-                props.onCurrentTimeUpdate(target.currentTime);
-            }
-            if (props.onTimeUpdate) {
-                props.onTimeUpdate(e);
-            }
-        });
     };
 
     if (videoRef.current && props.currentTime && lastCurrentTime !== props.currentTime) {
@@ -45,6 +35,22 @@ export function Video(props: { onReady?: Function, onCurrentTimeUpdate?: Functio
             }}
             controls
             onLoadStart={onLoad}
+            onFocus={(e) => {
+                e.target.blur();
+            }}
+            onTimeUpdate={(e) => {
+                if (!e.target) {
+                    return;
+                }
+                const target = e.target as HTMLVideoElement;
+
+                if (props.onCurrentTimeUpdate) {
+                    props.onCurrentTimeUpdate(target.currentTime);
+                }
+                if (props.onTimeUpdate) {
+                    props.onTimeUpdate(e);
+                }
+            }}
         >
             <source src={process.env.PUBLIC_URL + '/song.mp4'} type="video/mp4" />
         </video>

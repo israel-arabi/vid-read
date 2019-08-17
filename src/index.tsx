@@ -17,6 +17,7 @@ function App() {
   const [letter, setLLetter] = useState("ة");
   const [currentTime, setCurrentTime] = useState(10);
   const [videoTime, setVideoTime] = useState(0);
+  const [videoTarget, setVideoTarget] = useState();
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -34,6 +35,24 @@ function App() {
     if (e.key === ']') {
 
     }
+
+    if (e.key === 'ArrowRight') {
+      setCurrentTime(videoTime + 0.1);
+    }
+
+    if (e.key === 'ArrowLeft') {
+      setCurrentTime(videoTime - 0.1);
+    }
+
+    if (e.key === ' ') {
+      if (videoTarget.paused) {
+        videoTarget.play();
+      } else {
+        videoTarget.pause();
+      }
+    }
+
+    // console.log(e.key);
   };
 
   useEffect(() => {
@@ -77,6 +96,11 @@ function App() {
     console.log(event.wordIndex);
   };
 
+  const onLoad = (e: any) => {
+    console.log(e);
+    setVideoTarget(e.target);
+  }
+
   // regex for finding all arab letter .match(/[\u0621-\u064A0-9]+/g)
   let pastWordsCount = 0;
 
@@ -116,6 +140,7 @@ function App() {
         <Video
           onCurrentTimeUpdate={onCurrentTimeUpdate}
           currentTime={currentTime}
+          onLoad={onLoad}
         />
       </div>
     </div>
