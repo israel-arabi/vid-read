@@ -1,6 +1,6 @@
 import React, { useState, BaseSyntheticEvent, useEffect } from "react";
 import { render } from "react-dom";
-import { TextDisplay } from "./TextDisplay/TextDisplay";
+import { Line } from "./Line/Line";
 import "./styles.css";
 import * as _ from "lodash";
 import { LetterWiki } from "./LettersWiki/LettersWiki";
@@ -9,8 +9,6 @@ import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
 import { OffsetGenerator } from './util/offsetGenerator';
-import { createTextData } from './util/TextData/createTextData';
-import { TextData } from './util/TextData/TextData.interface';
 let letterLocked = false;
 
 function App() {
@@ -60,50 +58,51 @@ function App() {
   };
 
   const offsetGenerator = new OffsetGenerator;
-  // let textData: TextData;
-  // if (window.localStorage.textData) {
-  //   textData = JSON.parse(window.localStorage.textData);
-  // } else {
-  //   textData = createTextData(_illiInthur)
-  // }
 
   const onCurrentTimeUpdate = (time: number) => {
     setVideoTime(time);
   };
 
-  const onLetterClick = (offset: number) => {
-    // textData[offset].videoSecond = videoTime;
-    // console.log({ videoTime });
-    // window.localStorage.textData = JSON.stringify(textData);
-    // console.log(textData);
+  const onLetterClick = (offset: number) => { };
+
+  const onLetterChange = (newLetter: string) => {
+    if (!letterLocked) {
+      setLLetter(newLetter);
+    }
+  }
+
+  const onWordClick = (event: {
+    wordIndex: number
+  }) => {
+    console.log(event.wordIndex);
   };
+
+  // regex for finding all arab letter .match(/[\u0621-\u064A0-9]+/g)
+  let pastWordsCount = 0;
 
   return (
     <div className="App">
       <div className="text-area">
-        {
-          lines.map((line, key) => line
-            ? <TextDisplay
-              key={key}
-              text={line}
-              onWordChange={onWordChange}
-              onLetterClick={onLetterClick}
-              offset={offsetGenerator.getNewOffset(`${line}\n`)}
-              onLetterChange={
-                (newLetter: string) => {
-                  if (!letterLocked) {
-                    setLLetter(newLetter);
-                  }
-                }
-              }
-              onWordsClick={(e: BaseSyntheticEvent) => {
-                e.stopPropagation();
-                letterLocked = true;
-              }}
-            />
-            : offsetGenerator.getNewOffset(`\n`) && <br key={key} />
-          )
-        }
+        {lines.map((line, key) => {
+          const oldPastWordsCount = pastWordsCount;
+          if (!line) {
+            return <br key={key} />
+          }
+          pastWordsCount += line.split(' ').length;
+          return <Line
+            key={key}
+            text={line}
+            onWordChange={onWordChange}
+            onLetterClick={onLetterClick}
+            onLetterChange={onLetterChange}
+            onWordsClick={(e: BaseSyntheticEvent) => {
+              e.stopPropagation();
+              letterLocked = true;
+            }}
+            onWordClick={onWordClick}
+            pastWordsCount={oldPastWordsCount}
+          />;
+        })}
 
       </div>
       <div className="wikis"

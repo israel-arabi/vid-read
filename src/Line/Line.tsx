@@ -1,16 +1,15 @@
 import React from "react";
 import { Word } from "./Word";
-import { OffsetGenerator } from '../util/offsetGenerator';
 
-export function TextDisplay(props: {
+export function Line(props: {
     text: string;
     onWordChange: Function;
     onLetterChange: Function;
     onWordsClick: Function;
-    offset: number;
     onLetterClick: Function;
+    onWordClick: Function;
+    pastWordsCount: number;
 }) {
-    const offsetGenerator = new OffsetGenerator;
     const words = props.text.split(" ");
     return (
         <p className="words"
@@ -18,12 +17,13 @@ export function TextDisplay(props: {
         >
             {words.map((word, i) => (
                 <Word
-                    offset={offsetGenerator.getNewOffset(`${word} `) + props.offset}
                     style={{}}
                     key={i} word={`${word}`}
                     onWordChange={props.onWordChange}
                     onLetterChange={props.onLetterChange}
                     onLetterClick={props.onLetterClick}
+                    onWordClick={props.onWordClick}
+                    wordIndex={props.pastWordsCount + i}
                 />
             ))}
         </p>
