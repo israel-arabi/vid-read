@@ -19,6 +19,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(10);
   const [videoTime, setVideoTime] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
+  const [percent, setPercent] = useState(0);
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -60,11 +61,14 @@ function App() {
     window.addEventListener('click', onClick);
     window.addEventListener('keydown', onKeyDown);
 
+    if (videoTarget) {
+      setPercent(videoTarget.duration / 100);
+    }
     return () => {
       window.removeEventListener('click', onClick);
       window.removeEventListener('keydown', onKeyDown);
     }
-  }, [videoTime]);
+  }, [videoTime, videoTarget]);
 
   const onWordChange = (newWord: string) => {
     translate(newWord).then((translation: string) => {
@@ -139,10 +143,10 @@ function App() {
         <div style={{ marginLeft: 100 }}>
           <Timeline
             change={(newTime: number) => {
-              const percent = videoTarget.duration / 100;
               newTime = newTime * percent;
               setCurrentTime(newTime);
             }}
+            currentTime={percent ? videoTime / percent : 0}
           ></Timeline>
           <div style={{ height: 1 }}></div>
           <Video

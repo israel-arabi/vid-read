@@ -6,17 +6,18 @@ import { updateItem } from '../util/immutable-updates';
 
 interface TimelineProps {
     change?: Function;
+    currentTime: number;
 }
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
     const [clientWidth, setClientWidth] = useState(0);
     const [offsetLeft, setOffsetLeft] = useState(0);
+    const [currentTime, setCurrentTime] = useState(props.currentTime);
     const [markers, setMarkers] = useState([{
         start: 10,
         end: 30,
     }]);
-    const divRef = useRef<HTMLDivElement>(null);;
+    const divRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         window.addEventListener('mousemove', mousemove);
@@ -24,12 +25,14 @@ export function Timeline(props: TimelineProps) {
         if (divRef.current) {
             setClientWidth(divRef.current.clientWidth);
             setOffsetLeft(divRef.current.offsetLeft);
+            const onePercent = divRef.current.clientWidth / 100;
+            setCurrentTime(props.currentTime * onePercent);
         }
         return () => {
             window.removeEventListener('mousemove', mousemove);
             window.removeEventListener('mouseup', setMouseDownFalse);
         }
-    }, [isMouseDown, divRef]);
+    }, [isMouseDown, divRef, clientWidth]);
 
     const setMouseDownTrue = () => setMouseDown(true);
     const setMouseDownFalse = () => setMouseDown(false);
@@ -41,7 +44,7 @@ export function Timeline(props: TimelineProps) {
             props.change(offsetData.clickPercent);
         }
 
-        setCurrentTime(offsetData.clickOffset);
+        // setCurrentTime(offsetData.clickOffset);
     }
 
     const mousemove = (e: MouseEvent) => {
@@ -60,7 +63,11 @@ export function Timeline(props: TimelineProps) {
     const cursorWidth = 3;
 
     const getLeft = () => {
-        return getLimitedNumber(currentTime, clientWidth - cursorWidth)
+        if (!divRef.current) {
+            return 0;
+        }
+
+        return getLimitedNumber(props.currentTime * (divRef.current.clientWidth / 100), clientWidth - cursorWidth)
     }
 
     const setMarker = (markerId: number, value: { start?: number; end?: number }) => {
