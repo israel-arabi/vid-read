@@ -25,7 +25,7 @@ export function Cursor({ left, right, ...props }: CursorProps) {
         if (!isMouseDown) {
             return;
         }
-        props.onOffsetChange(e.screenX);
+        props.onOffsetChange(e.x);
     }
 
     const style: CSSProperties = {

@@ -2,6 +2,7 @@ import React, { MouseEvent as ReactMouseEvent, useState, useEffect, useRef } fro
 import { getLimitedNumber, getOffsetData } from './utils';
 import { TimeLineCursor } from './TimeLineCursor';
 import { TimeLineMarker } from './TimeLineMarker/TimeLineMarker';
+import { updateItem } from '../util/immutable-updates';
 
 interface TimelineProps {
     change?: Function;
@@ -9,29 +10,32 @@ interface TimelineProps {
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
-    const [markerStart, setMarkerStart] = useState(10);
-    const [markerEnd, setMarkerEnd] = useState(30);
+    const [clientWidth, setClientWidth] = useState(0);
+    const [offsetLeft, setOffsetLeft] = useState(0);
+    const [markers, setMarkers] = useState([{
+        start: 10,
+        end: 30,
+    }]);
     const divRef = useRef<HTMLDivElement>(null);;
 
     useEffect(() => {
         window.addEventListener('mousemove', mousemove);
         window.addEventListener('mouseup', setMouseDownFalse);
-
+        if (divRef.current) {
+            setClientWidth(divRef.current.clientWidth);
+            setOffsetLeft(divRef.current.offsetLeft);
+        }
         return () => {
             window.removeEventListener('mousemove', mousemove);
             window.removeEventListener('mouseup', setMouseDownFalse);
         }
-    }, [isMouseDown]);
+    }, [isMouseDown, divRef]);
 
     const setMouseDownTrue = () => setMouseDown(true);
     const setMouseDownFalse = () => setMouseDown(false);
 
     const offsetPercentChange = (eventMouseX: number) => {
-        if (!divRef.current) {
-            return;
-        }
-        const offsetData = getOffsetData(divRef.current.clientWidth, divRef.current.offsetLeft, eventMouseX,
-        );
+        const offsetData = getOffsetData(clientWidth, offsetLeft, eventMouseX);
 
         if (props.change) {
             props.change(offsetData.clickPercent);
@@ -45,21 +49,29 @@ export function Timeline(props: TimelineProps) {
         if (!isMouseDown) {
             return;
         }
-        offsetPercentChange(e.screenX);
+        offsetPercentChange(e.x);
     }
 
     const onMouseDown = (e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
         setMouseDownTrue();
-        offsetPercentChange(e.screenX);
+        offsetPercentChange(e.pageX);
     }
 
     const cursorWidth = 3;
 
     const getLeft = () => {
-        if (!divRef.current) {
-            return 10000;
+        return getLimitedNumber(currentTime, clientWidth - cursorWidth)
+    }
+
+    const setMarker = (markerId: number, value: { start?: number; end?: number }) => {
+        const marker = { ...markers[markerId] };
+        if (value.start) {
+            marker.start = getLimitedNumber(value.start - offsetLeft, marker.end);
         }
-        return getLimitedNumber(currentTime, divRef.current.clientWidth - cursorWidth)
+        if (value.end) {
+            marker.end = getLimitedNumber(value.end - offsetLeft, clientWidth, marker.start);
+        }
+        setMarkers(updateItem(markers, markerId, marker));
     }
 
     return (
@@ -74,22 +86,19 @@ export function Timeline(props: TimelineProps) {
                 position: 'relative'
             }}
         >
-            <TimeLineMarker
-                start={markerStart}
-                end={markerEnd}
-                onStartChange={value => {
-                    if (!divRef.current) {
-                        return;
-                    }
-                    setMarkerStart(value - divRef.current.offsetLeft)
-                }}
-                onEndChange={value => {
-                    if (!divRef.current) {
-                        return;
-                    }
-                    setMarkerEnd(value - divRef.current.offsetLeft)
-                }}
-            />
+            {markers.map((marker, index) => (
+                <TimeLineMarker
+                    key={index}
+                    start={marker.start}
+                    end={marker.end}
+                    onStartChange={start => {
+                        setMarker(index, { start });
+                    }}
+                    onEndChange={end => {
+                        setMarker(index, { end });
+                    }}
+                />
+            ))}
 
             <TimeLineCursor
                 left={getLeft()}

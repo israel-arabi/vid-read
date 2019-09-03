@@ -9,7 +9,6 @@ export const getLimitedNumber = (number: number, topLimit: number, bottomLimit =
     return number;
 }
 
-
 export const getOffsetData = (elementClientWidth: number, elementOffsetLeft: number, eventMouseX: number) => {
     const onePercent = elementClientWidth / 100;
     let clickOffset = getLimitedNumber(eventMouseX - elementOffsetLeft, elementClientWidth);
