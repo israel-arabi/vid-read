@@ -144,6 +144,7 @@ function App() {
               setCurrentTime(newTime);
             }}
           ></Timeline>
+          <div style={{ height: 1 }}></div>
           <Video
             onCurrentTimeUpdate={onCurrentTimeUpdate}
             currentTime={currentTime}

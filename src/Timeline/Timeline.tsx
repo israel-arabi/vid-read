@@ -1,6 +1,7 @@
 import React, { MouseEvent as ReactMouseEvent, useState, useEffect, useRef } from "react";
 import { getLimitedNumber, getOffsetData } from './utils';
 import { TimeLineCursor } from './TimeLineCursor';
+import { TimeLineMarker } from './TimeLineMarker/TimeLineMarker';
 
 interface TimelineProps {
     change?: Function;
@@ -8,6 +9,8 @@ interface TimelineProps {
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+    const [markerStart, setMarkerStart] = useState(10);
+    const [markerEnd, setMarkerEnd] = useState(30);
     const divRef = useRef<HTMLDivElement>(null);;
 
     useEffect(() => {
@@ -71,6 +74,23 @@ export function Timeline(props: TimelineProps) {
                 position: 'relative'
             }}
         >
+            <TimeLineMarker
+                start={markerStart}
+                end={markerEnd}
+                onStartChange={value => {
+                    if (!divRef.current) {
+                        return;
+                    }
+                    setMarkerStart(value - divRef.current.offsetLeft)
+                }}
+                onEndChange={value => {
+                    if (!divRef.current) {
+                        return;
+                    }
+                    setMarkerEnd(value - divRef.current.offsetLeft)
+                }}
+            />
+
             <TimeLineCursor
                 left={getLeft()}
                 cursorWidth={cursorWidth}
