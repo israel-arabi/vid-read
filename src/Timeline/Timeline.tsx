@@ -6,13 +6,13 @@ import { updateItem } from '../util/immutable-updates';
 
 interface TimelineProps {
     change?: Function;
-    currentTime: number;
+    currentTimePercent: number;
 }
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
     const [clientWidth, setClientWidth] = useState(0);
     const [offsetLeft, setOffsetLeft] = useState(0);
-    const [currentTime, setCurrentTime] = useState(props.currentTime);
+    const [currentTime, setCurrentTime] = useState(props.currentTimePercent);
     const [markers, setMarkers] = useState([{
         start: 10,
         end: 30,
@@ -26,7 +26,7 @@ export function Timeline(props: TimelineProps) {
             setClientWidth(divRef.current.clientWidth);
             setOffsetLeft(divRef.current.offsetLeft);
             const onePercent = divRef.current.clientWidth / 100;
-            setCurrentTime(props.currentTime * onePercent);
+            setCurrentTime(props.currentTimePercent * onePercent);
         }
         return () => {
             window.removeEventListener('mousemove', mousemove);
@@ -67,16 +67,16 @@ export function Timeline(props: TimelineProps) {
             return 0;
         }
 
-        return getLimitedNumber(props.currentTime * (divRef.current.clientWidth / 100), clientWidth - cursorWidth)
+        return getLimitedNumber(props.currentTimePercent * (divRef.current.clientWidth / 100), clientWidth - cursorWidth)
     }
 
     const setMarker = (markerId: number, value: { start?: number; end?: number }) => {
         const marker = { ...markers[markerId] };
         if (value.start) {
-            marker.start = getLimitedNumber(value.start - offsetLeft, marker.end);
+            marker.start = getLimitedNumber(value.start, marker.end);
         }
         if (value.end) {
-            marker.end = getLimitedNumber(value.end - offsetLeft, clientWidth, marker.start);
+            marker.end = getLimitedNumber(value.end, clientWidth, marker.start);
         }
         setMarkers(updateItem(markers, markerId, marker));
     }
@@ -90,7 +90,8 @@ export function Timeline(props: TimelineProps) {
                 width: '100%',
                 height: '10px',
                 backgroundColor: 'green',
-                position: 'relative'
+                position: 'relative',
+                zIndex: 1
             }}
         >
             {markers.map((marker, index) => (
@@ -98,12 +99,26 @@ export function Timeline(props: TimelineProps) {
                     key={index}
                     start={marker.start}
                     end={marker.end}
-                    onStartChange={start => {
-                        setMarker(index, { start });
+                    onStartChange={mouseEventX => {
+                        setMarker(index, { start: mouseEventX - offsetLeft });
                     }}
-                    onEndChange={end => {
-                        setMarker(index, { end });
+                    onEndChange={mouseEventX => {
+                        setMarker(index, { end: mouseEventX - offsetLeft });
                     }}
+                    onPercentStartChange={(percent) => {
+                        if (!divRef.current) {
+                            return;
+                        }
+                        console.log(percent * (divRef.current.clientWidth / 100));
+                        setMarker(index, { start: percent * (divRef.current.clientWidth / 100) });
+                    }}
+                    onPercentEndChange={(percent) => {
+                        if (!divRef.current) {
+                            return;
+                        }
+                        setMarker(index, { end: percent * (divRef.current.clientWidth / 100) });
+                    }}
+                    {...props}
                 />
             ))}
 

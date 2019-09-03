@@ -6,8 +6,12 @@ import { Cursor } from './Cursor';
 interface TimeLineMarkerProps {
     start: number;
     end: number;
-    onStartChange: (start: number) => unknown
-    onEndChange: (end: number) => unknown
+    currentTimePercent: number;
+    onStartChange: (mouseEventX: number) => unknown;
+    onEndChange: (mouseEventX: number) => unknown;
+
+    onPercentStartChange: (start: number) => unknown;
+    onPercentEndChange: (end: number) => unknown;
 }
 
 export function TimeLineMarker(props: TimeLineMarkerProps) {
@@ -32,6 +36,8 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
         >
             <TimeLineMarkerPopover
                 word={word}
+                startOnCurrent={() => props.onPercentStartChange(props.currentTimePercent)}
+                endOnCurrent={() => props.onPercentEndChange(props.currentTimePercent)}
             />
             <Cursor
                 onOffsetChange={props.onStartChange}

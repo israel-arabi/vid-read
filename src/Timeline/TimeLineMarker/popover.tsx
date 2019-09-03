@@ -2,6 +2,8 @@ import React from 'react';
 
 interface TimeLineMarkerPopoverProps {
     word: string;
+    startOnCurrent: () => unknown;
+    endOnCurrent: () => unknown;
 }
 export function TimeLineMarkerPopover(props: TimeLineMarkerPopoverProps) {
     return (
@@ -20,6 +22,24 @@ export function TimeLineMarkerPopover(props: TimeLineMarkerPopoverProps) {
             }}
         >
             {props.word}
+            <button
+                onClick={e => {
+                    e.stopPropagation();
+                    props.startOnCurrent();
+                    console.log('startOnCurrent');
+                }}
+            >
+                start on current
+            </button>
+            <button
+                onClick={e => {
+                    e.stopPropagation();
+                    props.endOnCurrent();
+                    console.log('endOnCurrent');
+                }}
+            >
+                end on current
+            </button>
             <div
                 style={{
                     position: 'absolute',

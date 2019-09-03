@@ -146,7 +146,7 @@ function App() {
               newTime = newTime * percent;
               setCurrentTime(newTime);
             }}
-            currentTime={percent ? videoTime / percent : 0}
+            currentTimePercent={percent ? videoTime / percent : 0}
           ></Timeline>
           <div style={{ height: 1 }}></div>
           <Video
