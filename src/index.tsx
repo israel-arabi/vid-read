@@ -1,4 +1,4 @@
-import React, { useState, BaseSyntheticEvent, useEffect } from "react";
+import React, { useState, BaseSyntheticEvent, useEffect, SyntheticEvent } from "react";
 import { render } from "react-dom";
 import { Line } from "./Line/Line";
 import "./styles.css";
@@ -8,7 +8,8 @@ import { WordsWiki } from "./WordsWiki/WordsWiki";
 import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
-import { OffsetGenerator } from './util/offsetGenerator';
+import { Timeline } from "./Timeline/Timeline";
+
 let letterLocked = false;
 
 function App() {
@@ -76,8 +77,6 @@ function App() {
     }
   };
 
-  const offsetGenerator = new OffsetGenerator;
-
   const onCurrentTimeUpdate = (time: number) => {
     setVideoTime(time);
   };
@@ -96,9 +95,9 @@ function App() {
     console.log(event.wordIndex);
   };
 
-  const onLoad = (e: any) => {
-    console.log(e);
-    setVideoTarget(e.target);
+  const onLoad = (e: SyntheticEvent<HTMLVideoElement>) => {
+    const target = e.target as HTMLVideoElement;
+    setVideoTarget(target);
   }
 
   // regex for finding all arab letter .match(/[\u0621-\u064A0-9]+/g)
@@ -137,11 +136,20 @@ function App() {
         }}>
         <LetterWiki letter={letter} />
         <WordsWiki ar={wordAr} translation={wordTranslation} />
-        <Video
-          onCurrentTimeUpdate={onCurrentTimeUpdate}
-          currentTime={currentTime}
-          onLoad={onLoad}
-        />
+        <div style={{ marginLeft: 100 }}>
+          <Timeline
+            change={(newTime: number) => {
+              const percent = videoTarget.duration / 100;
+              newTime = newTime * percent;
+              setCurrentTime(newTime);
+            }}
+          ></Timeline>
+          <Video
+            onCurrentTimeUpdate={onCurrentTimeUpdate}
+            currentTime={currentTime}
+            onLoad={onLoad}
+          />
+        </div>
       </div>
     </div>
   );
