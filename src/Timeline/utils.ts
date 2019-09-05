@@ -1,5 +1,5 @@
 
-export const getLimitedNumber = (number: number, topLimit: number, bottomLimit = 0) => {
+export const getLimitedNumber = (number: number, topLimit = Number.MAX_SAFE_INTEGER, bottomLimit = 0) => {
     if (number < bottomLimit) {
         return bottomLimit;
     }

@@ -9,10 +9,14 @@ import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
 import { Timeline } from "./Timeline/Timeline";
+import { WordsTimeMap } from './util/WordsTimeMap/WordsTimeMap';
 
 let letterLocked = false;
 
 function App() {
+  const wordsTimeMap = new WordsTimeMap;
+  wordsTimeMap.make(illiInthur);
+
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
   const [letter, setLLetter] = useState("ة");
@@ -20,6 +24,7 @@ function App() {
   const [videoTime, setVideoTime] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
   const [percent, setPercent] = useState(0);
+  const [markers, setMarkers] = useState(wordsTimeMap);
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -147,6 +152,8 @@ function App() {
               setCurrentTime(newTime);
             }}
             currentTimePercent={percent ? videoTime / percent : 0}
+            markers={markers}
+            setMarkers={setMarkers}
           ></Timeline>
           <div style={{ height: 1 }}></div>
           <Video

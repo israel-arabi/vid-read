@@ -4,19 +4,26 @@ import { TimeLineCursor } from './TimeLineCursor';
 import { TimeLineMarker } from './TimeLineMarker/TimeLineMarker';
 import { updateItem } from '../util/immutable-updates';
 
+interface TimeLineMarkerLocation {
+    start: number,
+    end: number,
+}
+
+function isTimeLineMarker(obj: Partial<TimeLineMarkerLocation>): obj is TimeLineMarkerLocation {
+    return !!obj.start && !!obj.end;
+}
+
 interface TimelineProps {
     change?: Function;
     currentTimePercent: number;
+    setMarkers: Function;
+    markers: Partial<TimeLineMarkerLocation>[];
 }
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
     const [clientWidth, setClientWidth] = useState(0);
     const [offsetLeft, setOffsetLeft] = useState(0);
     const [currentTime, setCurrentTime] = useState(props.currentTimePercent);
-    const [markers, setMarkers] = useState([{
-        start: 10,
-        end: 30,
-    }]);
     const divRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -71,14 +78,14 @@ export function Timeline(props: TimelineProps) {
     }
 
     const setMarker = (markerId: number, value: { start?: number; end?: number }) => {
-        const marker = { ...markers[markerId] };
+        const marker = { ...props.markers[markerId] };
         if (value.start) {
             marker.start = getLimitedNumber(value.start, marker.end);
         }
         if (value.end) {
             marker.end = getLimitedNumber(value.end, clientWidth, marker.start);
         }
-        setMarkers(updateItem(markers, markerId, marker));
+        props.setMarkers(updateItem(props.markers, markerId, marker));
     }
 
     return (
@@ -94,7 +101,7 @@ export function Timeline(props: TimelineProps) {
                 zIndex: 1
             }}
         >
-            {markers.map((marker, index) => (
+            {props.markers.filter(isTimeLineMarker).map((marker, index) => (
                 <TimeLineMarker
                     key={index}
                     start={marker.start}
