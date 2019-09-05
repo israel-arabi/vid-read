@@ -19,7 +19,7 @@ function App() {
 
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
-  const [letter, setLLetter] = useState("ة");
+  const [letter, setLLetter] = useState('');
   const [currentTime, setCurrentTime] = useState(10);
   const [videoTime, setVideoTime] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
