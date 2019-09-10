@@ -8,7 +8,7 @@ import { WordsWiki } from "./WordsWiki/WordsWiki";
 import { illiInthur } from "./data/illi-inthur.text"
 import { translate } from "./util/translate";
 import { Video } from "./Video/Video";
-import { Timeline } from "./Timeline/Timeline";
+import { Timeline, TimeLineMarkerLocation } from "./Timeline/Timeline";
 import { WordsTimeMap } from './util/WordsTimeMap/WordsTimeMap';
 
 let letterLocked = false;
@@ -24,7 +24,7 @@ function App() {
   const [videoTime, setVideoTime] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
   const [percent, setPercent] = useState(0);
-  const [markers, setMarkers] = useState(wordsTimeMap);
+  const [markers, setMarkers] = useState<TimeLineMarkerLocation[]>(wordsTimeMap);
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 

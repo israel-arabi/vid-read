@@ -1,23 +1,27 @@
-import React, { MouseEvent as ReactMouseEvent, useState, useEffect, useRef } from "react";
+import React, { MouseEvent as ReactMouseEvent, useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { getLimitedNumber, getOffsetData } from './utils';
 import { TimeLineCursor } from './TimeLineCursor';
 import { TimeLineMarker } from './TimeLineMarker/TimeLineMarker';
 import { updateItem } from '../util/immutable-updates';
 
-interface TimeLineMarkerLocation {
+export interface TimeLineMarkerLocation {
     start: number,
     end: number,
+    initialDrag?: {
+        start: number;
+        end: number;
+    },
 }
 
-function isTimeLineMarker(obj: Partial<TimeLineMarkerLocation>): obj is TimeLineMarkerLocation {
-    return !!obj.start && !!obj.end;
+function isValidTimeLineMarker(obj: TimeLineMarkerLocation) {
+    return obj.start >= 0 && obj.end >= 0;
 }
 
 interface TimelineProps {
     change?: Function;
     currentTimePercent: number;
-    setMarkers: Function;
-    markers: Partial<TimeLineMarkerLocation>[];
+    setMarkers: Dispatch<SetStateAction<TimeLineMarkerLocation[]>>;
+    markers: TimeLineMarkerLocation[];
 }
 export function Timeline(props: TimelineProps) {
     const [isMouseDown, setMouseDown] = useState(false);
@@ -77,7 +81,7 @@ export function Timeline(props: TimelineProps) {
         return getLimitedNumber(props.currentTimePercent * (divRef.current.clientWidth / 100), clientWidth - cursorWidth)
     }
 
-    const setMarker = (markerId: number, value: { start?: number; end?: number }) => {
+    const setMarker = (markerId: number, value: Partial<TimeLineMarkerLocation>) => {
         const marker = { ...props.markers[markerId] };
         if (value.start) {
             marker.start = getLimitedNumber(value.start, marker.end);
@@ -85,7 +89,8 @@ export function Timeline(props: TimelineProps) {
         if (value.end) {
             marker.end = getLimitedNumber(value.end, clientWidth, marker.start);
         }
-        props.setMarkers(updateItem(props.markers, markerId, marker));
+        const newItem = updateItem(props.markers, markerId, marker);
+        props.setMarkers(newItem);
     }
 
     return (
@@ -101,7 +106,7 @@ export function Timeline(props: TimelineProps) {
                 zIndex: 1
             }}
         >
-            {props.markers.filter(isTimeLineMarker).map((marker, index) => (
+            {props.markers.filter(isValidTimeLineMarker).map((marker, index) => (
                 <TimeLineMarker
                     key={index}
                     start={marker.start}
@@ -116,7 +121,6 @@ export function Timeline(props: TimelineProps) {
                         if (!divRef.current) {
                             return;
                         }
-                        console.log(percent * (divRef.current.clientWidth / 100));
                         setMarker(index, { start: percent * (divRef.current.clientWidth / 100) });
                     }}
                     onPercentEndChange={(percent) => {

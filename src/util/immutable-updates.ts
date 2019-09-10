@@ -9,7 +9,7 @@ export function removeItem<T = any>(array: T[], index: number) {
     return array.filter((item, i) => i !== index)
 }
 
-export function updateItem<T = any>(array: T[], index: number, item: T) {
+export function updateItem<T = any>(array: T[], index: number, item: T): T[] {
     return array.map((value, i) => {
         if (i !== index) {
             // This isn't the item we care about - keep it as-is

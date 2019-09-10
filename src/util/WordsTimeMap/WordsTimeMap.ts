@@ -1,8 +1,8 @@
 export interface WordsTimeMap {
     [wordIndex: number]: {
-        start?: number;
-        end?: number;
-        text?: string;
+        start: number;
+        end: number;
+        text: string;
     }
 }
 
@@ -11,7 +11,11 @@ export class WordsTimeMap extends Array implements WordsTimeMap {
     highlight?: number | null;
     make(text: string) {
         text.split(' ').forEach((word, k) => {
-            this[k] = { text: word };
+            this[k] = {
+                text: word,
+                start: -1,
+                end: -1,
+            };
         });
     }
     setWordStart(wordIndex: number, start: number) {
