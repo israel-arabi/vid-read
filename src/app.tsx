@@ -146,7 +146,7 @@ export function App() {
         <WordsWiki ar={wordAr} translation={wordTranslation} />
         <div style={{ marginLeft: 100 }}>
           <Timeline
-            change={(newTime: number) => {
+            onCurrentTimePercentChange={(newTime: number) => {
               newTime = newTime * percent;
               setCurrentTime(newTime);
             }}

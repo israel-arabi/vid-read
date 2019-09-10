@@ -18,7 +18,7 @@ function isValidTimeLineMarker(obj: TimeLineMarkerLocation) {
 }
 
 interface TimelineProps {
-    change?: Function;
+    onCurrentTimePercentChange?: Function;
     currentTimePercent: number;
     setMarkers: Dispatch<SetStateAction<TimeLineMarkerLocation[]>>;
     markers: TimeLineMarkerLocation[];
@@ -51,8 +51,8 @@ export function Timeline(props: TimelineProps) {
     const offsetPercentChange = (eventMouseX: number) => {
         const offsetData = getOffsetData(clientWidth, offsetLeft, eventMouseX);
 
-        if (props.change) {
-            props.change(offsetData.clickPercent);
+        if (props.onCurrentTimePercentChange) {
+            props.onCurrentTimePercentChange(offsetData.clickPercent);
         }
 
         // setCurrentTime(offsetData.clickOffset);
