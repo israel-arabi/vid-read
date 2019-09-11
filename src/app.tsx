@@ -57,8 +57,6 @@ export function App() {
         videoTarget.pause();
       }
     }
-
-    // console.log(e.key);
   };
 
   useEffect(() => {
