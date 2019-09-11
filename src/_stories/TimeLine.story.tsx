@@ -6,11 +6,11 @@ export function TimelineStory() {
         const value: TimeLineMarkerLocation[] = [
             {
                 start: 10,
-                end: 40,
+                end: 30,
             },
             {
-                start: -1,
-                end: -1,
+                start: 35,
+                end: 50,
             }
         ];
 

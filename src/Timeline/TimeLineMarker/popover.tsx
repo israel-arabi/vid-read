@@ -64,6 +64,14 @@ export function TimeLineMarkerPopover(props: TimeLineMarkerPopoverProps) {
                     left: 0,
                 }}
             />
+            <div
+                style={{
+                    position: 'absolute',
+                    top: -4,
+                    width: '100%',
+                    height: 20.
+                }}
+            />
 
         </div>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { TimeLineMarkerPopover } from './popover';
 import { Cursor } from './Cursor';
@@ -18,6 +18,7 @@ interface TimeLineMarkerProps {
 }
 
 export function TimeLineMarker(props: TimeLineMarkerProps) {
+    const [isHover, setIsHover] = useState(false);
     const word = 'alif';
 
     return (
@@ -33,7 +34,10 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
                 e.stopPropagation();
             }}
             onMouseEnter={() => {
-
+                setIsHover(true);
+            }}
+            onMouseLeave={() => {
+                setIsHover(false);
             }}
         >
             <div
@@ -58,11 +62,11 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
                 }}
                 draggable={true}
             />
-            <TimeLineMarkerPopover
+            {isHover && <TimeLineMarkerPopover
                 word={word}
                 startOnCurrent={() => props.onPercentStartChange(props.currentTimePercent)}
                 endOnCurrent={() => props.onPercentEndChange(props.currentTimePercent)}
-            />
+            />}
             <Cursor
                 onOffsetChange={props.onStartChange}
                 left
