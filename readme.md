@@ -15,3 +15,7 @@ Now you should be able to run the backend.
 - Crete a folder under the project root named `db`
 - Run the db `npm run db`
 - Run the server `npm run server`
+
+## TODO
+
+- Change the measuring units to all move by seconds
