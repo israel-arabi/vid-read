@@ -12,6 +12,9 @@ interface TimeLineMarkerProps {
 
     onPercentStartChange: (start: number) => unknown;
     onPercentEndChange: (end: number) => unknown;
+
+    onDrag: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
 export function TimeLineMarker(props: TimeLineMarkerProps) {
@@ -25,7 +28,6 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
                 top: -1,
                 left: props.start,
                 width: props.end - props.start,
-                backgroundColor: 'blue',
             }}
             onMouseDown={(e) => {
                 e.stopPropagation();
@@ -34,6 +36,28 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
 
             }}
         >
+            <div
+                style={{
+                    position: 'absolute',
+                    height: '100%',
+                    width: '100%',
+                    backgroundColor: 'blue',
+                }}
+                onDrag={e => {
+                    if (e.pageX === 0) {
+                        return;
+                    }
+                    props.onDrag(e);
+
+                }}
+                onDragEnd={e => {
+                    props.onDrag(e);
+                }}
+                onDragStart={e => {
+                    props.onDragStart(e);
+                }}
+                draggable={true}
+            />
             <TimeLineMarkerPopover
                 word={word}
                 startOnCurrent={() => props.onPercentStartChange(props.currentTimePercent)}

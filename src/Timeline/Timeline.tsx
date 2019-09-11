@@ -82,15 +82,15 @@ export function Timeline(props: TimelineProps) {
     }
 
     const setMarker = (markerId: number, value: Partial<TimeLineMarkerLocation>) => {
-        const marker = { ...props.markers[markerId] };
+        const marker = { ...props.markers[markerId], ...value };
         if (value.start) {
             marker.start = getLimitedNumber(value.start, marker.end);
         }
         if (value.end) {
             marker.end = getLimitedNumber(value.end, clientWidth, marker.start);
         }
-        const newItem = updateItem(props.markers, markerId, marker);
-        props.setMarkers(newItem);
+        const newMarkers = updateItem(props.markers, markerId, marker);
+        props.setMarkers(newMarkers);
     }
 
     return (
@@ -130,6 +130,24 @@ export function Timeline(props: TimelineProps) {
                         setMarker(index, { end: percent * (divRef.current.clientWidth / 100) });
                     }}
                     {...props}
+                    onDragStart={e => {
+                        const initialDrag = {
+                            start: e.pageX - marker.start,
+                            end: e.pageX - marker.end,
+                        }
+                        setMarker(index, { initialDrag });
+                    }}
+                    onDrag={e => {
+                        if (!marker.initialDrag) {
+                            return;
+                        }
+                        const end = e.pageX - marker.initialDrag.end;
+                        const start = e.pageX - marker.initialDrag.start;
+                        setMarker(index, {
+                            end,
+                            start,
+                        });
+                    }}
                 />
             ))}
 

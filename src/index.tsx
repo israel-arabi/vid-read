@@ -1,7 +1,5 @@
-import React from "react";
 import { render } from "react-dom";
-
-import { App } from './app';
+import { storySelect } from './_stories/storySelect';
 
 const rootElement = document.getElementById("root");
-render(<App />, rootElement);
+render(storySelect(), rootElement);
