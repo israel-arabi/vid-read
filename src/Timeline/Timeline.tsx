@@ -3,7 +3,7 @@ import { getLimitedNumber, getOffsetData } from './utils';
 import { TimeLineCursor } from './TimeLineCursor';
 import { TimeLineMarker } from './TimeLineMarker/TimeLineMarker';
 import { updateItem } from '../util/immutable-updates';
-
+import * as _ from 'lodash';
 export interface TimeLineMarkerLocation {
     start: number,
     end: number,
@@ -83,11 +83,16 @@ export function Timeline(props: TimelineProps) {
 
     const setMarker = (markerId: number, value: Partial<TimeLineMarkerLocation>) => {
         const marker = { ...props.markers[markerId], ...value };
+
         if (value.start) {
-            marker.start = getLimitedNumber(value.start, marker.end);
+            const prevMarker = props.markers[markerId - 1];
+            const lowestStart = _.get(prevMarker, 'end', 0);
+            marker.start = getLimitedNumber(value.start, marker.end, lowestStart);
         }
         if (value.end) {
-            marker.end = getLimitedNumber(value.end, clientWidth, marker.start);
+            const nextMarker = props.markers[markerId + 1];
+            const highestEnd =  _.get(nextMarker, 'start', clientWidth);
+            marker.end = getLimitedNumber(value.end, highestEnd, marker.start);
         }
         const newMarkers = updateItem(props.markers, markerId, marker);
         props.setMarkers(newMarkers);
