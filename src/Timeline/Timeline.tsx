@@ -83,7 +83,6 @@ export function Timeline(props: TimelineProps) {
 
     const setMarker = (markerId: number, value: Partial<TimeLineMarkerLocation>) => {
         const marker = { ...props.markers[markerId], ...value };
-
         if (value.start) {
             const prevMarker = props.markers[markerId - 1];
             const lowestStart = _.get(prevMarker, 'end', 0);
@@ -91,7 +90,7 @@ export function Timeline(props: TimelineProps) {
         }
         if (value.end) {
             const nextMarker = props.markers[markerId + 1];
-            const highestEnd =  _.get(nextMarker, 'start', clientWidth);
+            const highestEnd = _.get(nextMarker, 'start', clientWidth);
             marker.end = getLimitedNumber(value.end, highestEnd, marker.start);
         }
         const newMarkers = updateItem(props.markers, markerId, marker);
@@ -111,7 +110,7 @@ export function Timeline(props: TimelineProps) {
                 zIndex: 1
             }}
         >
-            {props.markers.filter(isValidTimeLineMarker).map((marker, index) => (
+            {props.markers.filter(isValidTimeLineMarker).map((marker, index) =>
                 <TimeLineMarker
                     key={index}
                     start={marker.start}
@@ -134,7 +133,7 @@ export function Timeline(props: TimelineProps) {
                         }
                         setMarker(index, { end: percent * (divRef.current.clientWidth / 100) });
                     }}
-                    {...props}
+                    currentTimePercent={props.currentTimePercent}
                     onDragStart={e => {
                         const initialDrag = {
                             start: e.pageX - marker.start,
@@ -153,8 +152,18 @@ export function Timeline(props: TimelineProps) {
                             start,
                         });
                     }}
+                    onMarkerChange={e => {
+                        const newProps: Partial<TimeLineMarkerLocation> = {};
+                        if (e.leftCursor) {
+                            newProps.start = e.leftCursor + marker.start;
+                        }
+                        if (e.rightCursor) {
+                            newProps.end = e.rightCursor + marker.end;
+                        }
+                        setMarker(index, newProps);
+                    }}
                 />
-            ))}
+            )}
 
             <TimeLineCursor
                 left={getLeft()}

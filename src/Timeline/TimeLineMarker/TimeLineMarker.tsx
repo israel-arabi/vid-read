@@ -15,6 +15,8 @@ interface TimeLineMarkerProps {
 
     onDrag: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
+
+    onMarkerChange: (movement: { leftCursor?: number, rightCursor?: number }) => void
 }
 
 export function TimeLineMarker(props: TimeLineMarkerProps) {
@@ -70,10 +72,22 @@ export function TimeLineMarker(props: TimeLineMarkerProps) {
             <Cursor
                 onOffsetChange={props.onStartChange}
                 left
+                moveLeft={(moveBy) => {
+                    props.onMarkerChange({ leftCursor: -moveBy });
+                }}
+                moveRight={(moveBy) => {
+                    props.onMarkerChange({ leftCursor: moveBy });
+                }}
             ></Cursor>
             <Cursor
                 onOffsetChange={props.onEndChange}
                 right
+                moveLeft={(moveBy) => {
+                    props.onMarkerChange({ rightCursor: -moveBy });
+                }}
+                moveRight={(moveBy) => {
+                    props.onMarkerChange({ rightCursor: moveBy });
+                }}
             ></Cursor>
         </div>
     );
