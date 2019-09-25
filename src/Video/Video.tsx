@@ -1,12 +1,17 @@
 import React, { useState, useRef, SyntheticEvent } from "react";
 import YouTube from 'react-youtube';
-// import song from './song.mp4';
 
-export function Video(props: { onLoad?: Function, onCurrentTimeUpdate?: Function, onTimeUpdate?: Function, currentTime?: number }) {
+export interface VideoProps {
+    onLoad?: Function;
+    onTimeUpdate?: Function;
+    currentTime?: number;
+}
+export function Video(props: VideoProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [lastCurrentTime, setLastCurrentTime] = useState();
     let onLoadCallback = () => { };
-    const onLoad = (e: SyntheticEvent) => {
+
+    const onLoadStart = (e: SyntheticEvent<HTMLVideoElement, Event>) => {
         if (!videoRef.current) {
             return;
         }
@@ -34,19 +39,15 @@ export function Video(props: { onLoad?: Function, onCurrentTimeUpdate?: Function
                 width: '100%'
             }}
             controls
-            onLoadStart={onLoad}
+            onLoadStart={onLoadStart}
             onFocus={(e) => {
                 e.target.blur();
             }}
             onTimeUpdate={(e) => {
                 if (!e.target) {
                     return;
-                }
-                const target = e.target as HTMLVideoElement;
+                };
 
-                if (props.onCurrentTimeUpdate) {
-                    props.onCurrentTimeUpdate(target.currentTime);
-                }
                 if (props.onTimeUpdate) {
                     props.onTimeUpdate(e);
                 }

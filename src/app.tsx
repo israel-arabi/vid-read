@@ -13,17 +13,21 @@ import { WordsTimeMap } from './util/WordsTimeMap/WordsTimeMap';
 let letterLocked = false;
 
 export function App() {
+  // init
   const wordsTimeMap = new WordsTimeMap;
   wordsTimeMap.make(illiInthur);
   wordsTimeMap[0] = { ...wordsTimeMap[0], start: 10, end: 30 };
+  // state variables
   const [wordTranslation, setWordTranslation] = useState('With the eye');
   const [wordAr, setWordAr] = useState('ينساك');
   const [letter, setLLetter] = useState('');
-  const [currentTime, setCurrentTime] = useState(10);
-  const [videoTime, setVideoTime] = useState(0);
+  const [timeToVideo, setTimeToVideo] = useState(10);
+  const [timeFromVideo, setTimeFromVideo] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
   const [percent, setPercent] = useState(0);
   const [markers, setMarkers] = useState<TimeLineMarkerLocation[]>(wordsTimeMap);
+
+  // component
   const _illiInthur = illiInthur.replace(/\n$/g, ``).replace(/^\n/g, ``);
   const lines = _illiInthur.split("\n");
 
@@ -43,11 +47,11 @@ export function App() {
     }
 
     if (e.key === 'ArrowRight') {
-      setCurrentTime(videoTime + 0.1);
+      setTimeToVideo(timeFromVideo + 0.1);
     }
 
     if (e.key === 'ArrowLeft') {
-      setCurrentTime(videoTime - 0.1);
+      setTimeToVideo(timeFromVideo - 0.1);
     }
 
     if (e.key === ' ') {
@@ -70,7 +74,7 @@ export function App() {
       window.removeEventListener('click', onClick);
       window.removeEventListener('keydown', onKeyDown);
     }
-  }, [videoTime, videoTarget]);
+  }, [timeFromVideo, videoTarget]);
 
   const onWordChange = (newWord: string) => {
     translate(newWord).then((translation: string) => {
@@ -83,8 +87,10 @@ export function App() {
     }
   };
 
-  const onCurrentTimeUpdate = (time: number) => {
-    setVideoTime(time);
+  const onCurrentTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    const target = e.target as HTMLVideoElement;
+
+    setTimeFromVideo(target.currentTime);
   };
 
   const onLetterClick = (offset: number) => { };
@@ -146,16 +152,16 @@ export function App() {
           <Timeline
             onCurrentTimePercentChange={(newTime: number) => {
               newTime = newTime * percent;
-              setCurrentTime(newTime);
+              setTimeToVideo(newTime);
             }}
-            currentTimePercent={percent ? videoTime / percent : 0}
+            currentTimePercent={percent ? timeFromVideo / percent : 0}
             markers={markers}
             setMarkers={setMarkers}
-          ></Timeline>
+          />
           <div style={{ height: 1 }}></div>
           <Video
-            onCurrentTimeUpdate={onCurrentTimeUpdate}
-            currentTime={currentTime}
+            onTimeUpdate={onCurrentTimeUpdate}
+            currentTime={timeToVideo}
             onLoad={onLoad}
           />
         </div>
