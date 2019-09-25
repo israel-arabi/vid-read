@@ -25,6 +25,7 @@ export function App() {
   const [timeFromVideo, setTimeFromVideo] = useState(0);
   const [videoTarget, setVideoTarget] = useState();
   const [percent, setPercent] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
   const [markers, setMarkers] = useState<TimeLineMarkerLocation[]>(wordsTimeMap);
 
   // component
@@ -67,12 +68,16 @@ export function App() {
     window.addEventListener('click', onClick);
     window.addEventListener('keydown', onKeyDown);
 
-    if (videoTarget) {
-      setPercent(videoTarget.duration / 100);
-    }
     return () => {
       window.removeEventListener('click', onClick);
       window.removeEventListener('keydown', onKeyDown);
+    }
+  }, [timeFromVideo, videoTarget]);
+
+  useEffect(() => {
+    if (videoTarget) {
+      setVideoDuration(videoTarget.duration);
+      setPercent(videoTarget.duration / 100);
     }
   }, [timeFromVideo, videoTarget]);
 
