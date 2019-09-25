@@ -90,7 +90,10 @@ export function Timeline(props: TimelineProps) {
         }
         if (value.end) {
             const nextMarker = props.markers[markerId + 1];
-            const highestEnd = _.get(nextMarker, 'start', clientWidth);
+            let highestEnd = _.get(nextMarker, 'start', clientWidth);
+            if (highestEnd < 0) {
+                highestEnd = clientWidth;
+            }
             marker.end = getLimitedNumber(value.end, highestEnd, marker.start);
         }
         const newMarkers = updateItem(props.markers, markerId, marker);
